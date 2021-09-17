@@ -9,10 +9,10 @@ import {
   FlatListProps,
 } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
+import { EditTaskProps } from "../pages/Home";
 
 import { ItemWrapper } from "./ItemWrapper";
-
-import trashIcon from "../assets/icons/trash/trash.png";
+import { TaskItem } from "./TaskItem";
 
 export interface Task {
   id: number;
@@ -24,12 +24,14 @@ interface TasksListProps {
   tasks: Task[];
   toggleTaskDone: (id: number) => void;
   removeTask: (id: number) => void;
+  editTask: ({ newTitle, taskId }: EditTaskProps) => void;
 }
 
 export function TasksList({
   tasks,
   toggleTaskDone,
   removeTask,
+  editTask,
 }: TasksListProps) {
   return (
     <FlatList
@@ -40,35 +42,12 @@ export function TasksList({
       renderItem={({ item, index }) => {
         return (
           <ItemWrapper index={index}>
-            <View>
-              <TouchableOpacity
-                testID={`button-${index}`}
-                activeOpacity={0.7}
-                style={styles.taskButton}
-                onPress={() => toggleTaskDone(item.id)}
-              >
-                <View
-                  testID={`marker-${index}`}
-                  style={item.done ? styles.taskMarkerDone : styles.taskMarker}
-                >
-                  {item.done && <Icon name="check" size={12} color="#FFF" />}
-                </View>
-
-                <Text
-                style={item.done ? styles.taskTextDone : styles.taskText}
-                >
-                  {item.title}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              testID={`trash-${index}`}
-              style={{ paddingHorizontal: 24 }}
-              onPress={() => removeTask(item.id)}
-            >
-              <Image source={trashIcon} />
-            </TouchableOpacity>
+            <TaskItem
+              task={item}
+              editTask={editTask}
+              removeTask={removeTask}
+              toggleTaskDone={toggleTaskDone}
+            />
           </ItemWrapper>
         );
       }}
